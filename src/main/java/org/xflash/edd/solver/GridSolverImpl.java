@@ -14,8 +14,8 @@ public class GridSolverImpl implements GridSolver {
 
     @Override
     public Collection<GridSolution> solve(Grid grid) {
-
-        return Collections.emptyList();
+        GridSolution gs = new GridSolution();
+        return Collections.singletonList(gs);
     }
 
 
