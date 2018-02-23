@@ -1,30 +1,23 @@
 package org.xflash.edd.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
 public class GridSolution {
-    private final List<Pill> pills;
+    private final List<GridPart> parts;
 
     public GridSolution(GridSolution gridSolution) {
-        this.pills = new ArrayList<>(gridSolution.pills);
+        this.parts = new ArrayList<>(gridSolution.parts);
     }
 
     public GridSolution() {
-        this.pills = new ArrayList<>();
+        this.parts = new ArrayList<>();
     }
 
-    public static GridSolution with(Pill... pills) {
-        GridSolution gridSolution = new GridSolution();
-        for (Pill pill : pills) {
-            gridSolution.addPill(pill);
-        }
-        return gridSolution;
-    }
-
-    public List<Pill> getPills() {
-        return pills;
+    public Collection<GridPart> getParts() {
+        return parts;
     }
 
     @Override
@@ -32,21 +25,20 @@ public class GridSolution {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GridSolution that = (GridSolution) o;
-        return Objects.equals(pills, that.pills);
+        return Objects.equals(parts, that.parts);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(pills);
+        return Objects.hash(parts);
     }
 
     @Override
     public String toString() {
-        return "GridSolution " + pills;
+        return "GridSolution " + parts;
     }
 
-    public void addPill(Pill pill) {
-        this.pills.add(pill);
+    public void addPart(GridPart part) {
+        this.parts.add(part);
     }
 }
