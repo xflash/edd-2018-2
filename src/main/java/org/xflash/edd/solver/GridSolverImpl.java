@@ -18,7 +18,7 @@ public class GridSolverImpl implements GridSolver {
         GridSolution gs = new GridSolution();
 
         GridBrowser gb = new GridBrowser(grid);
-        gb.forEach(n -> {
+        gb.forEachOrdered(n -> {
 
         });
         return Collections.singletonList(gs);
