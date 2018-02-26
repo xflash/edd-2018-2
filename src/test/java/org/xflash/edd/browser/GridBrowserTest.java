@@ -21,6 +21,8 @@ public class GridBrowserTest {
 
         gb.forEachOrdered((v, coord) -> {
             System.out.println("v = " + v + " - coord " + coord);
+
         });
     }
+
 }

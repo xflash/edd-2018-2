@@ -1,8 +1,8 @@
 package org.xflash.edd.model;
 
 public class Coord {
-    int x;
-    int y;
+    public int x;
+    public int y;
 
     public Coord(int x, int y) {
         this.x = x;
@@ -16,8 +16,7 @@ public class Coord {
 
         Coord coord = (Coord) o;
 
-        if (x != coord.x) return false;
-        return y == coord.y;
+        return x == coord.x && y == coord.y;
     }
 
     @Override
