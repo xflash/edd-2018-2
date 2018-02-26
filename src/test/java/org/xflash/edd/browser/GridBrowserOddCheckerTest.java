@@ -42,7 +42,29 @@ public class GridBrowserOddCheckerTest {
                         "vertical",
                         new Coord(0, 1),
                         Arrays.asList(GridPart.build(0, 0, 0, 2))
+                },
+                new Object[]{
+                        "vertical 2",
+                        new Coord(1, 1),
+                        Arrays.asList(GridPart.build(0, 0, 0, 1))
+                },
+                new Object[]{
+                        "vertical 2",
+                        new Coord(0, 3),
+                        Arrays.asList(
+                                GridPart.build(0, 3, 2, 3)
+                        )
+                },
+                new Object[]{
+                        "vertical 4",
+                        new Coord(3, 1),
+                        Arrays.asList(
+                                GridPart.build(2, 0, 3, 1),
+                                GridPart.build(2, 1, 3, 2)
+                        )
                 }
+
+
         );
     }
 
@@ -62,7 +84,7 @@ public class GridBrowserOddCheckerTest {
         GridBrowser gb = new GridBrowser(grid);
 
         ArrayList<GridPart> gridParts = new ArrayList<>();
-        gb.findOddRects(coord, gridParts::add);
+        gb.forEachGridParts(coord, gridParts::add);
         Assert.assertEquals(name, expected, gridParts);
 
     }

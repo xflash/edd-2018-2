@@ -77,7 +77,7 @@ public class GridBrowser {
         for (int j = x0; j <= coord.x; j++) {
             boolean found = false;
             for (int i = j; i < coord.x + v; i++) {
-                if (i > grid.w) break;
+                if (i >= grid.w) break;
                 if (coord.x == i) continue;
                 if (grid.cells[coord.y][i] != 0) found = true;
             }
