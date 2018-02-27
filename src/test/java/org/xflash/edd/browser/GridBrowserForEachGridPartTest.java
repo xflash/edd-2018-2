@@ -32,29 +32,46 @@ public class GridBrowserForEachGridPartTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> data() {
-
+        /*
+        0 0 0 0
+        3 2 0 4
+        0 2 0 0
+        3 0 0 2
+        */
         return Arrays.asList(
                 new Object[]{
                         "horizontal",
                         new Coord(0, 3),
-                        Arrays.asList(GridPart.build(0, 3, 2, 3))
+                        Arrays.asList(
+                                GridPart.build(0, 3, 2, 3),
+                                GridPart.build(0, 1, 0, 3)
+                        )
                 },
                 new Object[]{
                         "vertical",
                         new Coord(0, 1),
-                        Arrays.asList(GridPart.build(0, 0, 0, 2))
+                        Arrays.asList(
+                                GridPart.build(0, 1, 2, 1),
+                                GridPart.build(0, 0, 0, 2),
+                                GridPart.build(0, 1, 0, 3)
+                        )
                 },
                 new Object[]{
                         "vertical 2",
                         new Coord(1, 1),
-                        Arrays.asList(GridPart.build(0, 0, 0, 1))
+                        Arrays.asList(
+                                GridPart.build(1, 0, 1, 1),
+                                GridPart.build(1, 1, 2, 1),
+                                GridPart.build(1, 1, 1, 2),
+                                GridPart.build(0, 1, 1, 1)
+                        )
                 },
                 new Object[]{
                         "vertical 4",
                         new Coord(3, 1),
                         Arrays.asList(
-                                GridPart.build(2, 0, 3, 1),
-                                GridPart.build(2, 1, 3, 2)
+                                GridPart.build(2, 1, 3, 2),
+                                GridPart.build(2, 0, 3, 1)
                         )
                 }
 

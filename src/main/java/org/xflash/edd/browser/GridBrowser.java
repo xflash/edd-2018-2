@@ -49,8 +49,15 @@ public class GridBrowser {
         int v = grid.cells[coord.y][coord.x];
         switch (v) {
             case 1:
-                GridPart build = GridPart.build(coord, coord);
-                checkAndConsume(consumer, build);
+            case 3:
+            case 5:
+            case 7:
+            case 9:
+            case 11:
+            case 13:
+                iterOddParts(coord, v, gp -> {
+                    checkAndConsume(consumer, gp);
+                });
                 return;
             case 2:
                 checkAndConsume(consumer, GridPart.build(coord.move(0, -1), coord));
@@ -58,54 +65,40 @@ public class GridBrowser {
                 checkAndConsume(consumer, GridPart.build(coord, coord.move(0, 1)));
                 checkAndConsume(consumer, GridPart.build(coord.move(-1, 0), coord));
                 return;
-            case 3:
-                checkAndConsume(consumer, GridPart.build(coord.move(-2, 0), coord));
-                checkAndConsume(consumer, GridPart.build(coord.move(-1, 0), coord.move(1, 0)));
-                checkAndConsume(consumer, GridPart.build(coord, coord.move(2, 0)));
-
-                checkAndConsume(consumer, GridPart.build(coord.move(0, -2), coord));
-                checkAndConsume(consumer, GridPart.build(coord.move(0, -1), coord.move(0, 1)));
-                checkAndConsume(consumer, GridPart.build(coord, coord.move(0, 2)));
-                return;
             case 4:
-//                consumer.accept(GridPart.build(coord, coord));
+                checkAndConsume(consumer, GridPart.build(coord.move(0, -1), coord.move(1, 0)));
+                checkAndConsume(consumer, GridPart.build(coord, coord.move(1, 1)));
+                checkAndConsume(consumer, GridPart.build(coord.move(-1, 0), coord.move(0, 1)));
+                checkAndConsume(consumer, GridPart.build(coord.move(-1, -1), coord));
                 return;
             default:
                 throw new IllegalArgumentException("Value v is not handled actually");
         }
     }
 
+    private void iterOddParts(Coord coord, int nb, Consumer<GridPart> consumer) {
+        for (int x = (-nb + 1); x <= 0; x++) {
+            consumer.accept(GridPart.build(coord.move(x, 0), coord.move(x + nb - 1, 0)));
+        }
+        for (int y = (-nb + 1); y <= 0; y++) {
+            consumer.accept(GridPart.build(coord.move(0, y), coord.move(0, y + nb - 1)));
+        }
+    }
+
     private void checkAndConsume(Consumer<GridPart> consumer, GridPart gridPart) {
-        Coord lu = gridPart.lu;
-        if (lu.x < 0 || lu.x >= grid.w) return;
-        if (lu.y < 0 || lu.y >= grid.h) return;
-        Coord rb = gridPart.rb;
-        if (rb.x < 0 || rb.x >= grid.w) return;
-        if (rb.y < 0 || rb.y >= grid.h) return;
+        if (!checkInGrid(gridPart)) return;
         consumer.accept(gridPart);
     }
 
-    void findOddRects(Coord coord, Consumer<GridPart> gridPartConsumer) {
-        int v = grid.cells[coord.y][coord.x];
-
-        //find most-left coord
-        int x0 = coord.x;
-        while (x0 > 0
-                && grid.cells[coord.y][x0] > 0
-                && (coord.x - x0) <= v) {
-            x0--;
-        }
-
-        for (int j = x0; j <= coord.x; j++) {
-            boolean found = false;
-            for (int i = j; i < coord.x + v; i++) {
-                if (i >= grid.w) break;
-                if (coord.x == i) continue;
-                if (grid.cells[coord.y][i] != 0) found = true;
-            }
-            if (!found)
-                gridPartConsumer.accept(GridPart.build(new Coord(x0, coord.y), new Coord(j + v - 1, coord.y)));
-        }
+    private boolean checkInGrid(GridPart gridPart) {
+        Coord lu = gridPart.lu;
+        Coord rb = gridPart.rb;
+        return lu.x >= 0 && lu.x < grid.w
+                && lu.y >= 0 && lu.y < grid.h
+                && rb.x >= 0 && rb.x < grid.w
+                && rb.y >= 0 && rb.y < grid.h;
     }
+
+
 
 }
