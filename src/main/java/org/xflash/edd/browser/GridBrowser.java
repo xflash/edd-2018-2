@@ -55,9 +55,7 @@ public class GridBrowser {
             case 9:
             case 11:
             case 13:
-                iterOddParts(coord, v, gp -> {
-                    checkAndConsume(consumer, gp);
-                });
+                iterOddParts(coord, v, consumer);
                 return;
             case 2:
                 checkAndConsume(consumer, GridPart.build(coord.move(0, -1), coord));
@@ -78,10 +76,10 @@ public class GridBrowser {
 
     private void iterOddParts(Coord coord, int nb, Consumer<GridPart> consumer) {
         for (int x = (-nb + 1); x <= 0; x++) {
-            consumer.accept(GridPart.build(coord.move(x, 0), coord.move(x + nb - 1, 0)));
+            checkAndConsume(consumer, GridPart.build(coord.move(x, 0), coord.move(x + nb - 1, 0)));
         }
         for (int y = (-nb + 1); y <= 0; y++) {
-            consumer.accept(GridPart.build(coord.move(0, y), coord.move(0, y + nb - 1)));
+            checkAndConsume(consumer, GridPart.build(coord.move(0, y), coord.move(0, y + nb - 1)));
         }
     }
 

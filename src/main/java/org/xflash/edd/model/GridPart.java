@@ -43,4 +43,8 @@ public class GridPart {
                 .append("}")
                 .toString();
     }
+
+    public boolean collapse(GridPart other) {
+        return this.lu.x <= other.rb.x && this.rb.x >= other.lu.x && this.lu.y <= other.rb.y && this.rb.y >= other.lu.y;
+    }
 }

@@ -8,12 +8,23 @@ import java.util.Objects;
 public class GridSolution {
     private final List<GridPart> parts;
 
-    public GridSolution(GridSolution gridSolution) {
-        this.parts = new ArrayList<>(gridSolution.parts);
+    private GridSolution() {
+        this.parts = new ArrayList<>();
     }
 
-    public GridSolution() {
-        this.parts = new ArrayList<>();
+    public GridSolution(GridSolution gridSolution) {
+        this();
+        this.parts.addAll(gridSolution.parts);
+    }
+
+    public GridSolution(GridPart gp) {
+        this();
+        this.parts.add(gp);
+    }
+
+    public GridSolution(GridSolution gridSolution, GridPart gp) {
+        this(gridSolution);
+        this.parts.add(gp);
     }
 
     public Collection<GridPart> getParts() {

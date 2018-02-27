@@ -4,10 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xflash.edd.browser.GridBrowser;
 import org.xflash.edd.model.Grid;
+import org.xflash.edd.model.GridPart;
 import org.xflash.edd.model.GridSolution;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class GridSolverImpl implements GridSolver {
 
@@ -15,13 +17,37 @@ public class GridSolverImpl implements GridSolver {
 
     @Override
     public Collection<GridSolution> solve(Grid grid) {
-        GridSolution gs = new GridSolution();
-
+        Set<GridSolution> set = new HashSet<>();
         GridBrowser gb = new GridBrowser(grid);
-        gb.forEachOrdered((v, c) -> {
 
+        gb.forEachOrdered((val, coord) -> {
+            LOGGER.info("Compute solution set for val {} at {}", val, coord);
+            gb.forEachGridParts(coord, gp -> {
+                LOGGER.debug("Checking gridPart {} ", gp);
+                if (set.isEmpty()) {
+                    set.add(new GridSolution(gp));
+                } else {
+                    Set<GridSolution> gridSolutions = new HashSet<>();
+                    for (GridSolution gridSolution : set) {
+                        if (!isGridPartCollapsingGridSolution(gridSolution, gp))
+                            gridSolutions.add(new GridSolution(gridSolution, gp));
+                    }
+                    set.addAll(gridSolutions);
+                }
+            });
         });
-        return Collections.singletonList(gs);
+        return set;
+    }
+
+    private boolean isGridPartCollapsingGridSolution(GridSolution gridSolution, GridPart gp) {
+        boolean collapsing = false;
+        for (GridPart gridPart : gridSolution.getParts()) {
+            if (gp.collapse(gridPart)) {
+                collapsing = true;
+                break;
+            }
+        }
+        return collapsing;
     }
 
 
