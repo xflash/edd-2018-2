@@ -28,9 +28,13 @@ public class Coord {
 
     @Override
     public String toString() {
-        return new StringBuilder("{")
+        return new StringBuilder("(")
                 .append(x)
                 .append(",").append(y)
-                .append('}').toString();
+                .append(')').toString();
+    }
+
+    public Coord move(int x, int y) {
+        return new Coord(this.x + x, this.y + y);
     }
 }

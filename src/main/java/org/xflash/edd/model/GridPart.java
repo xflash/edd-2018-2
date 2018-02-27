@@ -1,8 +1,8 @@
 package org.xflash.edd.model;
 
 public class GridPart {
-    Coord lu;
-    Coord rb;
+    public Coord lu;
+    public Coord rb;
 
     private GridPart(Coord lu, Coord rb) {
         this.lu = lu;
@@ -36,9 +36,11 @@ public class GridPart {
 
     @Override
     public String toString() {
-        return new StringBuilder()
+        return new StringBuilder("{")
                 .append(lu)
                 .append(", ")
-                .append(rb).toString();
+                .append(rb)
+                .append("}")
+                .toString();
     }
 }

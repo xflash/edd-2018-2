@@ -43,24 +43,46 @@ public class GridBrowser {
 0 2 0 0
 3 0 0 2
      */
-    public void forEachGridParts(Coord coord, Consumer<GridPart> gridPartConsumer) {
+    public void forEachGridParts(Coord coord, Consumer<GridPart> consumer) {
         if (coord.y >= grid.cells.length || coord.x >= grid.cells[coord.y].length)
             throw new IllegalArgumentException("Coord are out of cell length");
         int v = grid.cells[coord.y][coord.x];
-        if (v == 1) {
-            gridPartConsumer.accept(GridPart.build(coord, coord));
-            return;
+        switch (v) {
+            case 1:
+                GridPart build = GridPart.build(coord, coord);
+                checkAndConsume(consumer, build);
+                return;
+            case 2:
+                checkAndConsume(consumer, GridPart.build(coord.move(0, -1), coord));
+                checkAndConsume(consumer, GridPart.build(coord, coord.move(1, 0)));
+                checkAndConsume(consumer, GridPart.build(coord, coord.move(0, 1)));
+                checkAndConsume(consumer, GridPart.build(coord.move(-1, 0), coord));
+                return;
+            case 3:
+                checkAndConsume(consumer, GridPart.build(coord.move(-2, 0), coord));
+                checkAndConsume(consumer, GridPart.build(coord.move(-1, 0), coord.move(1, 0)));
+                checkAndConsume(consumer, GridPart.build(coord, coord.move(2, 0)));
+
+                checkAndConsume(consumer, GridPart.build(coord.move(0, -2), coord));
+                checkAndConsume(consumer, GridPart.build(coord.move(0, -1), coord.move(0, 1)));
+                checkAndConsume(consumer, GridPart.build(coord, coord.move(0, 2)));
+                return;
+            case 4:
+//                consumer.accept(GridPart.build(coord, coord));
+                return;
+            default:
+                throw new IllegalArgumentException("Value v is not handled actually");
         }
+    }
 
-        if ((v % 2) != 0) {
-            // odd
-            findOddRects(coord, gridPartConsumer);
-
-        } else {
-            // even
-
-        }
-
+    private void checkAndConsume(Consumer<GridPart> consumer, GridPart gridPart) {
+        Coord lu = gridPart.lu;
+        if (lu.x < 0 || lu.x >= grid.w) return;
+        if (lu.y < 0 || lu.y >= grid.h) return;
+        Coord rb = gridPart.rb;
+        if (rb.x < 0 || rb.x >= grid.w) return;
+        if (rb.y < 0 || rb.y >= grid.h) return;
+        consumer.accept(gridPart);
     }
 
     void findOddRects(Coord coord, Consumer<GridPart> gridPartConsumer) {
