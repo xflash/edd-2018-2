@@ -20,7 +20,7 @@ public class GridBrowserTest {
         GridBrowser gb = new GridBrowser(grid);
 
         gb.forEachOrdered((v, coord) -> {
-            System.out.println("v = " + v + " - coord " + coord);
+//            System.out.println("v = " + v + " - coord " + coord);
 
         });
     }

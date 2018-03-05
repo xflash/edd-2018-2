@@ -1,6 +1,8 @@
 package org.xflash.edd.browser;
 
 import javafx.util.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xflash.edd.model.Coord;
 import org.xflash.edd.model.Grid;
 import org.xflash.edd.model.GridPart;
@@ -11,6 +13,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class GridBrowser {
+    public static final Logger LOGGER = LoggerFactory.getLogger(GridBrowser.class);
     private final Grid grid;
 
     public GridBrowser(Grid grid) {
@@ -18,6 +21,8 @@ public class GridBrowser {
     }
 
     public void forEachOrdered(BiConsumer<Integer, Coord> consumer) {
+        LOGGER.info("Iterating on each val in grid : {}", grid);
+
         List<Pair<Integer, Coord>> pairs = new ArrayList<>();
         forEach((v, c) -> pairs.add(new Pair<>(v, c)));
         pairs.sort((o1, o2) -> Integer.compare(o2.getKey(), o1.getKey()));
