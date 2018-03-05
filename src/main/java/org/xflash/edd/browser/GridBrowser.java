@@ -70,7 +70,7 @@ public class GridBrowser {
                 checkAndConsume(consumer, GridPart.build(coord.move(-1, -1), coord));
                 return;
             default:
-                throw new IllegalArgumentException("Value v is not handled actually");
+                throw new IllegalArgumentException("Value " + v + " is not handled actually");
         }
     }
 
