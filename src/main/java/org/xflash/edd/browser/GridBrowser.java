@@ -8,6 +8,7 @@ import org.xflash.edd.model.Grid;
 import org.xflash.edd.model.GridPart;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -52,6 +53,7 @@ public class GridBrowser {
         if (coord.y >= grid.cells.length || coord.x >= grid.cells[coord.y].length)
             throw new IllegalArgumentException("Coord are out of cell length");
         int v = grid.cells[coord.y][coord.x];
+        LOGGER.info("Iterating each grid parts available at {} : {}", coord, v);
         switch (v) {
             case 1:
             case 3:
@@ -90,6 +92,7 @@ public class GridBrowser {
 
     private void checkAndConsume(Consumer<GridPart> consumer, GridPart gridPart) {
         if (!checkInGrid(gridPart)) return;
+        LOGGER.info("Proposing GridPart {} ", gridPart);
         consumer.accept(gridPart);
     }
 
@@ -103,5 +106,13 @@ public class GridBrowser {
     }
 
 
-
+    public boolean isGridPartCollapsing(GridPart gp, Coord coord) {
+        HashSet<Coord> collapsing = new HashSet<>();
+        forEach((integer, coord1) -> {
+            if (coord1.equals(coord)) return;
+            if (gp.collapse(GridPart.build(coord1, coord1)))
+                collapsing.add(coord1);
+        });
+        return collapsing.isEmpty();
+    }
 }

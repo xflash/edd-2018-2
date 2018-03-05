@@ -17,27 +17,35 @@ public class GridSolverImpl implements GridSolver {
 
     @Override
     public Collection<GridSolution> solve(Grid grid) {
-        Set<GridSolution> set = new HashSet<>();
+        Set<GridSolution> solutionNodes = new HashSet<>();
         GridBrowser gb = new GridBrowser(grid);
 
         gb.forEachOrdered((val, coord) -> {
-            LOGGER.info("Compute solution set for val {} at {}", val, coord);
             gb.forEachGridParts(coord, gp -> {
-                LOGGER.debug("Checking gridPart {} ", gp);
-                if (set.isEmpty()) {
-                    set.add(new GridSolution(gp));
-                } else {
-                    Set<GridSolution> gridSolutions = new HashSet<>();
-                    for (GridSolution gridSolution : set) {
-                        if (!isGridPartCollapsingGridSolution(gridSolution, gp))
-                            gridSolutions.add(new GridSolution(gridSolution, gp));
+                if (gb.isGridPartCollapsing(gp, coord)) {
+                    LOGGER.info("Gridpart {} for val {} at {} matchs ", gp, val, coord);
+                    if (solutionNodes.isEmpty()) {
+                        LOGGER.info("Create a GridSolution with {}", gp);
+                        solutionNodes.add(new GridSolution(gp));
+                    } else {
+                        Set<GridSolution> gridSolutions = new HashSet<>();
+
+                        LOGGER.info("Checking GridPart {} matchs with all {}", gp, solutionNodes);
+
+                        for (GridSolution gridSolution : solutionNodes) {
+
+                            if (!isGridPartCollapsingGridSolution(gridSolution, gp))
+                                gridSolutions.add(new GridSolution(gridSolution, gp));
+                        }
+                        solutionNodes.addAll(gridSolutions);
                     }
-                    set.addAll(gridSolutions);
                 }
+
             });
         });
-        return set;
+        return solutionNodes;
     }
+
 
     private boolean isGridPartCollapsingGridSolution(GridSolution gridSolution, GridPart gp) {
         boolean collapsing = false;
