@@ -12,7 +12,7 @@ public class Runner {
 
     public static void main(String[] args) {
 
-        Grid grid1 = GridReader.from(FileUtils.classpath("grid1.txt"));
+        Grid grid1 = GridReader.from(FileUtils.classpath("grid2.txt"));
 
         GridSolver gridSolver = new GridSolverImpl();
         Collection<GridSolution> solutions = gridSolver.solve(grid1);
