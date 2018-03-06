@@ -19,7 +19,7 @@ public class GridBrowserTest {
     public void checkArrays() throws Exception {
         GridBrowser gb = new GridBrowser(grid);
 
-        gb.forEachOrdered((v, coord) -> {
+        gb.forEachOrderedValue((v, coord) -> {
 //            System.out.println("v = " + v + " - coord " + coord);
 
         });

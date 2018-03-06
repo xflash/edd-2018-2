@@ -30,7 +30,8 @@ public class Coord {
     public String toString() {
         return new StringBuilder("(")
                 .append(x)
-                .append(",").append(y)
+                .append(",")
+                .append(y)
                 .append(')').toString();
     }
 

@@ -16,7 +16,7 @@ public class Grid {
         final StringBuilder sb = new StringBuilder("\n");
         String sep = "";
         sb.append("  ");
-        sb.append(Ansis.ANSI_BOLD);
+        sb.append(Ansis.ANSI_BLUE);
         for (int i = 0; i < w; i++) {
             sb.append(sep).append(i);
             sep = " ";
@@ -32,11 +32,15 @@ public class Grid {
             sep = "";
             sb.append(sep2);
 
-            sb.append(Ansis.ANSI_BOLD)
+            sb.append(Ansis.ANSI_RESET)
+                    .append(Ansis.ANSI_RED)
                     .append(r).append(" ")
                     .append(Ansis.ANSI_RESET);
+
             for (int i : cell) {
-                sb.append(sep).append(i == 0 ? "." : i);
+                sb.append(Ansis.ANSI_BOLD)
+                        .append(sep).append(i == 0 ? "." : i)
+                        .append(Ansis.ANSI_RESET);
                 sep = " ";
             }
             sep2 = "\n";

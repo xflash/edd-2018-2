@@ -21,8 +21,8 @@ public class GridBrowser {
         this.grid = grid;
     }
 
-    public void forEachOrdered(BiConsumer<Integer, Coord> consumer) {
-        LOGGER.info("Iterating on each val in grid : {}", grid);
+    public void forEachOrderedValue(BiConsumer<Integer, Coord> consumer) {
+        LOGGER.info("Iterating each values in : {}", grid);
 
         List<Pair<Integer, Coord>> pairs = new ArrayList<>();
         forEach((v, c) -> pairs.add(new Pair<>(v, c)));
@@ -49,11 +49,11 @@ public class GridBrowser {
 0 2 0 0
 3 0 0 2
      */
-    public void forEachGridParts(Coord coord, Consumer<GridPart> consumer) {
-        if (coord.y >= grid.cells.length || coord.x >= grid.cells[coord.y].length)
+    public void forEachGridParts(Coord origin, Consumer<GridPart> consumer) {
+        if (origin.y >= grid.cells.length || origin.x >= grid.cells[origin.y].length)
             throw new IllegalArgumentException("Coord are out of cell length");
-        int v = grid.cells[coord.y][coord.x];
-        LOGGER.info("Iterating each grid parts available at {} : {}", coord, v);
+        int v = grid.cells[origin.y][origin.x];
+        LOGGER.info("Iterating each grid parts available at {} : {}", origin, v);
         switch (v) {
             case 1:
             case 3:
@@ -62,36 +62,42 @@ public class GridBrowser {
             case 9:
             case 11:
             case 13:
-                iterOddParts(coord, v, consumer);
+                iterOddParts(origin, v, consumer);
                 return;
             case 2:
-                checkAndConsume(consumer, GridPart.build(coord.move(0, -1), coord));
-                checkAndConsume(consumer, GridPart.build(coord, coord.move(1, 0)));
-                checkAndConsume(consumer, GridPart.build(coord, coord.move(0, 1)));
-                checkAndConsume(consumer, GridPart.build(coord.move(-1, 0), coord));
+                checkAndConsume(origin, GridPart.build(origin.move(0, -1), origin), consumer);
+                checkAndConsume(origin, GridPart.build(origin, origin.move(1, 0)), consumer);
+                checkAndConsume(origin, GridPart.build(origin, origin.move(0, 1)), consumer);
+                checkAndConsume(origin, GridPart.build(origin.move(-1, 0), origin), consumer);
                 return;
             case 4:
-                checkAndConsume(consumer, GridPart.build(coord.move(0, -1), coord.move(1, 0)));
-                checkAndConsume(consumer, GridPart.build(coord, coord.move(1, 1)));
-                checkAndConsume(consumer, GridPart.build(coord.move(-1, 0), coord.move(0, 1)));
-                checkAndConsume(consumer, GridPart.build(coord.move(-1, -1), coord));
+                checkAndConsume(origin, GridPart.build(origin.move(0, -1), origin.move(1, 0)), consumer);
+                checkAndConsume(origin, GridPart.build(origin, origin.move(1, 1)), consumer);
+                checkAndConsume(origin, GridPart.build(origin.move(-1, 0), origin.move(0, 1)), consumer);
+                checkAndConsume(origin, GridPart.build(origin.move(-1, -1), origin), consumer);
                 return;
+
+            case 6:
+            case 8:
+            case 10:
+            case 12:
             default:
                 throw new IllegalArgumentException("Value " + v + " is not handled actually");
         }
     }
 
-    private void iterOddParts(Coord coord, int nb, Consumer<GridPart> consumer) {
+    private void iterOddParts(Coord origin, int nb, Consumer<GridPart> consumer) {
         for (int x = (-nb + 1); x <= 0; x++) {
-            checkAndConsume(consumer, GridPart.build(coord.move(x, 0), coord.move(x + nb - 1, 0)));
+            checkAndConsume(origin, GridPart.build(origin.move(x, 0), origin.move(x + nb - 1, 0)), consumer);
         }
         for (int y = (-nb + 1); y <= 0; y++) {
-            checkAndConsume(consumer, GridPart.build(coord.move(0, y), coord.move(0, y + nb - 1)));
+            checkAndConsume(origin, GridPart.build(origin.move(0, y), origin.move(0, y + nb - 1)), consumer);
         }
     }
 
-    private void checkAndConsume(Consumer<GridPart> consumer, GridPart gridPart) {
+    private void checkAndConsume(final Coord origin, GridPart gridPart, Consumer<GridPart> consumer) {
         if (!checkInGrid(gridPart)) return;
+        if (isGridPartCollapsing(gridPart, origin)) return;
         LOGGER.info("Proposing GridPart {} ", gridPart);
         consumer.accept(gridPart);
     }
@@ -113,6 +119,6 @@ public class GridBrowser {
             if (gp.collapse(GridPart.build(coord1, coord1)))
                 collapsing.add(coord1);
         });
-        return collapsing.isEmpty();
+        return !collapsing.isEmpty();
     }
 }

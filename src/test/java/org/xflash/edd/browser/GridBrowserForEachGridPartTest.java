@@ -38,22 +38,24 @@ public class GridBrowserForEachGridPartTest {
         0 2 0 0
         3 0 0 2
         */
-        return Arrays.asList(
+        return
+//                Collections.singletonList(
+                Arrays.asList(
                 new Object[]{
                         "horizontal",
                         new Coord(0, 3),
                         Arrays.asList(
-                                GridPart.build(0, 3, 2, 3),
-                                GridPart.build(0, 1, 0, 3)
+                                GridPart.build(0, 3, 2, 3)
+//                                GridPart.build(0, 1, 0, 3)
                         )
                 },
                 new Object[]{
                         "vertical",
                         new Coord(0, 1),
                         Arrays.asList(
-                                GridPart.build(0, 1, 2, 1),
-                                GridPart.build(0, 0, 0, 2),
-                                GridPart.build(0, 1, 0, 3)
+//                                GridPart.build(0, 1, 2, 1),
+                                GridPart.build(0, 0, 0, 2)
+//                                GridPart.build(0, 1, 0, 3)
                         )
                 },
                 new Object[]{
@@ -61,9 +63,9 @@ public class GridBrowserForEachGridPartTest {
                         new Coord(1, 1),
                         Arrays.asList(
                                 GridPart.build(1, 0, 1, 1),
-                                GridPart.build(1, 1, 2, 1),
-                                GridPart.build(1, 1, 1, 2),
-                                GridPart.build(0, 1, 1, 1)
+                                GridPart.build(1, 1, 2, 1)
+//                                GridPart.build(1, 1, 1, 2),
+//                                GridPart.build(0, 1, 1, 1)
                         )
                 },
                 new Object[]{
