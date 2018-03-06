@@ -62,8 +62,8 @@ public class GridBrowserForEachGridPartTest {
                         "vertical 2",
                         new Coord(1, 1),
                         Arrays.asList(
-                                GridPart.build(1, 0, 1, 1),
-                                GridPart.build(1, 1, 2, 1)
+                                GridPart.build(1, 1, 2, 1),
+                                GridPart.build(1, 0, 1, 1)
 //                                GridPart.build(1, 1, 1, 2),
 //                                GridPart.build(0, 1, 1, 1)
                         )
