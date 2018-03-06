@@ -53,15 +53,23 @@ public class GridBrowser {
         if (origin.y >= grid.cells.length || origin.x >= grid.cells[origin.y].length)
             throw new IllegalArgumentException("Coord are out of cell length");
         int v = grid.cells[origin.y][origin.x];
-        LOGGER.info("Iterating each grid parts available at {} : {}", origin, v);
+
+        boolean prime = isPrime(v);
+        LOGGER.info("Iterating each grid parts available at {} : {} prime: {}", origin, v, prime);
         switch (v) {
             case 1:
             case 3:
             case 5:
             case 7:
+                iterOddParts(origin, v, consumer);
+                return;
+
             case 9:
+//                TODO review me as
             case 11:
+//                TODO review me
             case 13:
+//                TODO review me
                 iterOddParts(origin, v, consumer);
                 return;
             case 2:
@@ -84,6 +92,18 @@ public class GridBrowser {
             default:
                 throw new IllegalArgumentException("Value " + v + " is not handled actually");
         }
+    }
+
+    //checks whether an int is prime or not.
+    boolean isPrime(int n) {
+        //check if n is a multiple of 2
+        if (n % 2 == 0) return false;
+        //if not, then just check the odds
+        for (int i = 3; i * i <= n; i += 2) {
+            if (n % i == 0)
+                return false;
+        }
+        return true;
     }
 
     private void iterOddParts(Coord origin, int nb, Consumer<GridPart> consumer) {

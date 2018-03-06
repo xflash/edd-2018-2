@@ -2,6 +2,8 @@ package org.xflash.edd.model;
 
 public class Grid {
 
+    private static final String WHITESPACE = " ";
+    private static final String DWHITESPACE = "  ";
     public final int w;
     public final int h;
     public int[][] cells;
@@ -15,11 +17,12 @@ public class Grid {
     public String toString() {
         final StringBuilder sb = new StringBuilder("\n");
         String sep = "";
-        sb.append("  ");
+//        print first row
+        sb.append(DWHITESPACE + WHITESPACE);
         sb.append(Ansis.ANSI_BLUE);
         for (int i = 0; i < w; i++) {
-            sb.append(sep).append(i);
-            sep = " ";
+            sb.append(i)
+                    .append(i < 10 ? DWHITESPACE : WHITESPACE);
         }
         sb.append(Ansis.ANSI_RESET);
         sb.append("\n");
@@ -29,19 +32,18 @@ public class Grid {
         for (int r = 0; r < cells.length; r++) {
             int[] cell = cells[r];
 
-            sep = "";
             sb.append(sep2);
 
             sb.append(Ansis.ANSI_RESET)
                     .append(Ansis.ANSI_RED)
-                    .append(r).append(" ")
+                    .append(r)
+                    .append(r < 10 ? DWHITESPACE : WHITESPACE)
                     .append(Ansis.ANSI_RESET);
-
-            for (int i : cell) {
+            for (int v : cell) {
                 sb.append(Ansis.ANSI_BOLD)
-                        .append(sep).append(i == 0 ? "." : i)
-                        .append(Ansis.ANSI_RESET);
-                sep = " ";
+                        .append(v == 0 ? "." : v)
+                        .append(Ansis.ANSI_RESET)
+                        .append(v < 10 ? DWHITESPACE : WHITESPACE);
             }
             sep2 = "\n";
         }
