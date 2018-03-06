@@ -1,5 +1,6 @@
 package org.xflash.edd.solver;
 
+import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xflash.edd.browser.GridBrowser;
@@ -8,7 +9,10 @@ import org.xflash.edd.model.Grid;
 import org.xflash.edd.model.GridPart;
 import org.xflash.edd.model.GridSolution;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class GridSolverImpl implements GridSolver {
 
@@ -18,37 +22,54 @@ public class GridSolverImpl implements GridSolver {
     public Collection<GridSolution> solve(Grid grid) {
         GridBrowser gb = new GridBrowser(grid);
 
-        HashMap<Coord, Set<GridSolution>> map = new HashMap<>();
+        HashMap<Pair<Integer, Coord>, Set<GridSolution>> map = new HashMap<>();
 
-//        Coord lastCoord=null;
+        final Pair<Integer, Coord>[] lastCoords = new Pair[]{null};
 
         gb.forEachOrderedValue((val, coord) -> {
 
-            map.put(coord, new HashSet<>());
+            Pair<Integer, Coord> key = new Pair<>(val, coord);
+            HashSet<GridSolution> currentCoordSolutions = new HashSet<>();
+            Pair<Integer, Coord> lastCoord = lastCoords[0];
 
             gb.forEachGridParts(coord, gp -> {
-                LOGGER.info("Checking if Gridpart {} collapse with {}", gp, coord);
-                Set<GridSolution> solutionNodes = map.get(coord);
-                if (solutionNodes.isEmpty()) {
-                    LOGGER.info("Create a GridSolution with {}", gp);
-                    solutionNodes.add(new GridSolution(gp));
-                } else {
-                    Set<GridSolution> gridSolutions = new HashSet<>();
-
-                    LOGGER.info("Checking GridPart {} matchs with all {}", gp, solutionNodes);
-
-                    for (GridSolution gridSolution : solutionNodes) {
-
-                        if (!isGridPartCollapsingGridSolution(gridSolution, gp))
-                            gridSolutions.add(new GridSolution(gridSolution, gp));
+                LOGGER.info("Building new GridSolution with gp {} ", gp, coord);
+                if (lastCoord == null)
+                    currentCoordSolutions.add(new GridSolution(gp));
+                else {
+                    Set<GridSolution> lastGridSolutions = map.get(lastCoord);
+                    boolean added = false;
+                    for (GridSolution lastGridSolution : lastGridSolutions) {
+                        if (!isGridSolutionCollapsingWithGridPart(lastGridSolution, gp)) {
+                            currentCoordSolutions.add(new GridSolution(lastGridSolution, gp));
+                            added = true;
+                        }
                     }
-                    solutionNodes.addAll(gridSolutions);
+                    if (!added)
+                        LOGGER.info("GridPart {} will be ignored as it don't fit to any previous solutions", gp);
                 }
-
             });
-        });
+            if (!currentCoordSolutions.isEmpty()) {
+                if (lastCoord != null) {
+                    LOGGER.info("Remove outdated GridSolutions for {}", lastCoord);
+                    map.remove(lastCoord);
+                }
+                LOGGER.info("Storing updated GridSolutions for {} : {}", key, currentCoordSolutions);
+                map.put(key, currentCoordSolutions);
+            } else {
 
-        return Collections.emptyList();
+            }
+            lastCoords[0] = key;
+        });
+        return map.get(lastCoords[0]);
+    }
+
+    private boolean isGridSolutionCollapsingWithGridPart(GridSolution gridSolution, GridPart gp) {
+        for (GridPart gridPart : gridSolution.getParts()) {
+            if (gridPart.collapse(gp))
+                return true;
+        }
+        return false;
     }
 
 

@@ -34,4 +34,13 @@ public class GridPartTest {
         Assert.assertFalse(gp.collapse(GridPart.build(2, 0, 3, 1)));
     }
 
+    @Test
+    public void checkTCollapse() throws Exception {
+        GridPart gp = GridPart.build(0, 3, 2, 3);
+        Assert.assertTrue(gp.collapse(GridPart.build(0, 2, 0, 3)));
+        Assert.assertTrue(gp.collapse(GridPart.build(1, 2, 1, 3)));
+        Assert.assertTrue(gp.collapse(GridPart.build(2, 2, 2, 3)));
+
+    }
+
 }
