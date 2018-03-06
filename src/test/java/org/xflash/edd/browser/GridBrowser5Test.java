@@ -35,11 +35,11 @@ public class GridBrowser5Test {
                 {1, 1, 1, 1, 0},
                 {1, 1, 1, 1, 0},
                 {1, 1, 1, 1, 0},
-                {0, 0, 0, 0, 4},
+                {0, 0, 0, 0, 5},
         })).forEachGridParts(new Coord(4, 4), gridParts::add);
         Assert.assertEquals(2, gridParts.size());
-        Assert.assertTrue(gridParts.contains(GridPart.build(4, 1, 4, 4)));
-        Assert.assertTrue(gridParts.contains(GridPart.build(1, 4, 4, 4)));
+        Assert.assertTrue(gridParts.contains(GridPart.build(4, 0, 4, 4)));
+        Assert.assertTrue(gridParts.contains(GridPart.build(0, 4, 4, 4)));
     }
 
     @Test
