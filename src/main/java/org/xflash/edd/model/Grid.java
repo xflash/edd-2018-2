@@ -13,6 +13,12 @@ public class Grid {
         this.h = h;
     }
 
+    public Grid(int[][] cells) {
+        this.cells = cells;
+        this.h = cells.length;
+        this.w = cells[0].length;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("\n");

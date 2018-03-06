@@ -58,27 +58,35 @@ public class GridBrowser {
         LOGGER.info("Iterating each grid parts available at {} : {} prime: {}", origin, v, prime);
         switch (v) {
             case 1:
+                checkAndConsume(origin, GridPart.build(origin, origin), consumer);
             case 3:
-            case 5:
-            case 7:
-                iterOddParts(origin, v, consumer);
+                iterCrossParts(origin, v, consumer);
                 return;
-
+            case 5:
+                iterCrossParts(origin, v, consumer);
+                return;
+            case 7:
+                iterCrossParts(origin, v, consumer);
+                return;
             case 9:
-//                TODO review me as
+//                TODO review me as it is a square
+                iterCrossParts(origin, v, consumer);
+                return;
             case 11:
-//                TODO review me
+                iterCrossParts(origin, v, consumer);
+                return;
             case 13:
-//                TODO review me
-                iterOddParts(origin, v, consumer);
+                iterCrossParts(origin, v, consumer);
                 return;
             case 2:
-                checkAndConsume(origin, GridPart.build(origin.move(0, -1), origin), consumer);
-                checkAndConsume(origin, GridPart.build(origin, origin.move(1, 0)), consumer);
-                checkAndConsume(origin, GridPart.build(origin, origin.move(0, 1)), consumer);
-                checkAndConsume(origin, GridPart.build(origin.move(-1, 0), origin), consumer);
+                iterCrossParts(origin, v, consumer);
+//                checkAndConsume(origin, GridPart.build(origin.move(0, -1), origin), consumer);
+//                checkAndConsume(origin, GridPart.build(origin, origin.move(1, 0)), consumer);
+//                checkAndConsume(origin, GridPart.build(origin, origin.move(0, 1)), consumer);
+//                checkAndConsume(origin, GridPart.build(origin.move(-1, 0), origin), consumer);
                 return;
             case 4:
+                iterCrossParts(origin, v, consumer);
                 checkAndConsume(origin, GridPart.build(origin.move(0, -1), origin.move(1, 0)), consumer);
                 checkAndConsume(origin, GridPart.build(origin, origin.move(1, 1)), consumer);
                 checkAndConsume(origin, GridPart.build(origin.move(-1, 0), origin.move(0, 1)), consumer);
@@ -86,16 +94,24 @@ public class GridBrowser {
                 return;
 
             case 6:
+                iterCrossParts(origin, v, consumer);
+                return;
             case 8:
+                iterCrossParts(origin, v, consumer);
+                return;
             case 10:
+                iterCrossParts(origin, v, consumer);
+                return;
             case 12:
+                iterCrossParts(origin, v, consumer);
+                return;
             default:
                 throw new IllegalArgumentException("Value " + v + " is not handled actually");
         }
     }
 
     //checks whether an int is prime or not.
-    boolean isPrime(int n) {
+    private boolean isPrime(int n) {
         //check if n is a multiple of 2
         if (n % 2 == 0) return false;
         //if not, then just check the odds
@@ -106,7 +122,7 @@ public class GridBrowser {
         return true;
     }
 
-    private void iterOddParts(Coord origin, int nb, Consumer<GridPart> consumer) {
+    private void iterCrossParts(Coord origin, int nb, Consumer<GridPart> consumer) {
         for (int x = (-nb + 1); x <= 0; x++) {
             checkAndConsume(origin, GridPart.build(origin.move(x, 0), origin.move(x + nb - 1, 0)), consumer);
         }
