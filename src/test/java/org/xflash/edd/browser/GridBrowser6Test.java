@@ -176,7 +176,9 @@ public class GridBrowser6Test {
         Assert.assertTrue(gridParts.contains(GridPart.build(2, 2, 7, 2)));
 
         Assert.assertTrue(gridParts.contains(GridPart.build(2, 1, 3, 3)));
-//        Assert.assertTrue(gridParts.contains(GridPart.build(2, 1, 3, 3)));
+        Assert.assertTrue(gridParts.contains(GridPart.build(1, 2, 3, 3)));
+        Assert.assertTrue(gridParts.contains(GridPart.build(1, 1, 2, 3)));
+        Assert.assertTrue(gridParts.contains(GridPart.build(1, 1, 3, 2)));
     }
 
 
