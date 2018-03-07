@@ -43,13 +43,13 @@ public class GridBrowser {
         }
     }
 
+
     private static List<Integer> findDivisors(int num) {
         List<Integer> res = new ArrayList<>();
         res.add(1);
         res.add(num);
         for (int i = 2; i <= num / 2; i++) {
             if (num % i == 0) {
-//                System.out.print(i + " , ");
                 res.add(i);
             }
         }
@@ -64,13 +64,9 @@ public class GridBrowser {
 3 0 0 2
      */
     public void forEachGridParts(Coord origin, Consumer<GridPart> consumer) {
-        if (origin.y >= grid.cells.length || origin.x >= grid.cells[origin.y].length)
-            throw new IllegalArgumentException("Coord are out of cell length");
-        int v = grid.cells[origin.y][origin.x];
-
-        boolean prime = isPrime(v);
+        int v = getVal(origin);
         List<Integer> divisors = findDivisors(v);
-        LOGGER.info("Iterating each grid parts available at {} : {} prime: {} divisors {}", origin, v, prime, divisors);
+        LOGGER.info("Iterating each grid parts available at {} : {} - divisors {}", origin, v, divisors);
         switch (v) {
             case 1:
                 checkAndConsume(origin, GridPart.build(origin, origin), consumer);
@@ -125,23 +121,23 @@ public class GridBrowser {
         }
     }
 
-    void iterEachDims(int num, BiConsumer<Integer, Integer> consumer) {
-        List<Integer> divisors = findDivisors(num);
-        for (Integer divisor : divisors) {
-            consumer.accept(divisor, num / divisor);
-        }
+    private int getVal(Coord origin) {
+        if (origin.y >= grid.cells.length || origin.x >= grid.cells[origin.y].length)
+            throw new IllegalArgumentException("Coord are out of cell length");
+        return grid.cells[origin.y][origin.x];
     }
 
-    //checks whether an int is prime or not.
-    private boolean isPrime(int n) {
-        //check if n is a multiple of 2
-        if (n % 2 == 0) return false;
-        //if not, then just check the odds
-        for (int i = 3; i * i <= n; i += 2) {
-            if (n % i == 0)
-                return false;
+    void forEachOffset(int val, Consumer<Coord> offsetConsumer) {
+        if (val == 1) {
+            offsetConsumer.accept(new Coord(0, 0));
+            return;
         }
-        return true;
+        iterEachDims(val, (w, h) -> {
+            LOGGER.debug("Trying to {}/{}", w, h);
+            for (int x = 0; x <= w; x++) {
+                offsetConsumer.accept(new Coord(x, h));
+            }
+        });
     }
 
     private void iterCrossParts(Coord origin, int nb, Consumer<GridPart> consumer) {
@@ -151,6 +147,21 @@ public class GridBrowser {
         for (int y = (-nb + 1); y <= 0; y++) {
             checkAndConsume(origin, GridPart.build(origin.move(0, y), origin.move(0, y + nb - 1)), consumer);
         }
+    }
+
+    void iterEachDims(int num, BiConsumer<Integer, Integer> consumer) {
+        for (Integer divisor : findDivisors(num)) {
+            consumer.accept(divisor, num / divisor);
+        }
+    }
+
+    private boolean isPrime(int n) {
+        if (n % 2 == 0) return false;
+        for (int i = 3; i * i <= n; i += 2) {
+            if (n % i == 0)
+                return false;
+        }
+        return true;
     }
 
     private void checkAndConsume(final Coord origin, GridPart gridPart, Consumer<GridPart> consumer) {
