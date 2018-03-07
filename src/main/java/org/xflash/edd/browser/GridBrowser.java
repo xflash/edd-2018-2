@@ -43,6 +43,20 @@ public class GridBrowser {
         }
     }
 
+    private static List<Integer> findDivisors(int num) {
+        List<Integer> res = new ArrayList<>();
+        res.add(1);
+        res.add(num);
+        for (int i = 2; i <= num / 2; i++) {
+            if (num % i == 0) {
+//                System.out.print(i + " , ");
+                res.add(i);
+            }
+        }
+        res.sort(Integer::compareTo);
+        return res;
+    }
+
     /*
 0 0 0 0
 3 2 0 4
@@ -55,7 +69,8 @@ public class GridBrowser {
         int v = grid.cells[origin.y][origin.x];
 
         boolean prime = isPrime(v);
-        LOGGER.info("Iterating each grid parts available at {} : {} prime: {}", origin, v, prime);
+        List<Integer> divisors = findDivisors(v);
+        LOGGER.info("Iterating each grid parts available at {} : {} prime: {} divisors {}", origin, v, prime, divisors);
         switch (v) {
             case 1:
                 checkAndConsume(origin, GridPart.build(origin, origin), consumer);
@@ -107,6 +122,13 @@ public class GridBrowser {
                 return;
             default:
                 throw new IllegalArgumentException("Value " + v + " is not handled actually");
+        }
+    }
+
+    void iterEachDims(int num, BiConsumer<Integer, Integer> consumer) {
+        List<Integer> divisors = findDivisors(num);
+        for (Integer divisor : divisors) {
+            consumer.accept(divisor, num / divisor);
         }
     }
 
