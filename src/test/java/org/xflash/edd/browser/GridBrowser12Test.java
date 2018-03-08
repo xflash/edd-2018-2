@@ -59,7 +59,11 @@ public class GridBrowser12Test {
                                 GridPart.build(5, 0, 5, 11),
                                 GridPart.build(5, 1, 5, 12),
                                 GridPart.build(5, 2, 5, 13),
+
 //TODO decribe the 3x4, 4x3, 2x6, 6x2 possibilities
+                                GridPart.build(3, 2, 5, 13),
+                                GridPart.build(4, 2, 6, 13),
+                                GridPart.build(5, 2, 7, 13),
                         }
                 }
         );
