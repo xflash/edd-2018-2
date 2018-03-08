@@ -189,6 +189,7 @@ public class GridBrowser9Test {
                                 GridPart.build(1, 2, 9, 2),
                                 GridPart.build(2, 0, 2, 8),
                                 GridPart.build(2, 1, 2, 9),
+                                GridPart.build(1, 1, 3, 3),
                         }
                 },
                 new Object[]{
@@ -213,7 +214,6 @@ public class GridBrowser9Test {
                                 GridPart.build(4, 0, 4, 8),
                                 GridPart.build(4, 1, 4, 9),
 
-
                                 GridPart.build(2, 2, 4, 4),
                                 GridPart.build(3, 2, 5, 4),
                                 GridPart.build(4, 2, 6, 4),
@@ -223,6 +223,9 @@ public class GridBrowser9Test {
 
                                 GridPart.build(2, 4, 4, 6),
                                 GridPart.build(3, 4, 5, 6),
+
+                                GridPart.build(2, 3, 4, 5),
+                                GridPart.build(3, 3, 5, 5),
                         }
                 }
         );

@@ -4,6 +4,7 @@ import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xflash.edd.model.Coord;
+import org.xflash.edd.model.Dim;
 import org.xflash.edd.model.Grid;
 import org.xflash.edd.model.GridPart;
 
@@ -19,6 +20,19 @@ public class GridBrowser {
 
     public GridBrowser(Grid grid) {
         this.grid = grid;
+    }
+
+    private static List<Integer> findDivisors(int num) {
+        List<Integer> res = new ArrayList<>();
+        res.add(1);
+        res.add(num);
+        for (int i = 2; i <= num / 2; i++) {
+            if (num % i == 0) {
+                res.add(i);
+            }
+        }
+        res.sort(Integer::compareTo);
+        return res;
     }
 
     public void forEachOrderedValue(BiConsumer<Integer, Coord> consumer) {
@@ -43,82 +57,17 @@ public class GridBrowser {
         }
     }
 
-
-    private static List<Integer> findDivisors(int num) {
-        List<Integer> res = new ArrayList<>();
-        res.add(1);
-        res.add(num);
-        for (int i = 2; i <= num / 2; i++) {
-            if (num % i == 0) {
-                res.add(i);
-            }
-        }
-        res.sort(Integer::compareTo);
-        return res;
-    }
-
-    /*
-0 0 0 0
-3 2 0 4
-0 2 0 0
-3 0 0 2
-     */
     public void forEachGridParts(Coord origin, Consumer<GridPart> consumer) {
         int v = getVal(origin);
-        List<Integer> divisors = findDivisors(v);
-        LOGGER.info("Iterating each grid parts available at {} : {} - divisors {}", origin, v, divisors);
-        switch (v) {
-            case 1:
-                checkAndConsume(origin, GridPart.build(origin, origin), consumer);
-            case 3:
-                iterCrossParts(origin, v, consumer);
-                return;
-            case 5:
-                iterCrossParts(origin, v, consumer);
-                return;
-            case 7:
-                iterCrossParts(origin, v, consumer);
-                return;
-            case 9:
-//                TODO review me as it is a square
-                iterCrossParts(origin, v, consumer);
-                return;
-            case 11:
-                iterCrossParts(origin, v, consumer);
-                return;
-            case 13:
-                iterCrossParts(origin, v, consumer);
-                return;
-            case 2:
-                iterCrossParts(origin, v, consumer);
-//                checkAndConsume(origin, GridPart.build(origin.move(0, -1), origin), consumer);
-//                checkAndConsume(origin, GridPart.build(origin, origin.move(1, 0)), consumer);
-//                checkAndConsume(origin, GridPart.build(origin, origin.move(0, 1)), consumer);
-//                checkAndConsume(origin, GridPart.build(origin.move(-1, 0), origin), consumer);
-                return;
-            case 4:
-                iterCrossParts(origin, v, consumer);
-                checkAndConsume(origin, GridPart.build(origin.move(0, -1), origin.move(1, 0)), consumer);
-                checkAndConsume(origin, GridPart.build(origin, origin.move(1, 1)), consumer);
-                checkAndConsume(origin, GridPart.build(origin.move(-1, 0), origin.move(0, 1)), consumer);
-                checkAndConsume(origin, GridPart.build(origin.move(-1, -1), origin), consumer);
-                return;
+        LOGGER.info("Iterating each grid parts available at {} : {}", origin, v);
 
-            case 6:
-                iterCrossParts(origin, v, consumer);
-                return;
-            case 8:
-                iterCrossParts(origin, v, consumer);
-                return;
-            case 10:
-                iterCrossParts(origin, v, consumer);
-                return;
-            case 12:
-                iterCrossParts(origin, v, consumer);
-                return;
-            default:
-                throw new IllegalArgumentException("Value " + v + " is not handled actually");
-        }
+        forEachOffset(v, ((dim, offset) -> {
+            Coord lu = origin.move(offset.x, offset.y);
+            Coord rb = lu.move(dim.w - 1, dim.h - 1);
+            GridPart gridPart = GridPart.build(lu, rb);
+            LOGGER.debug("Checking if gridPart {} fit the grid", gridPart);
+            checkAndConsume(origin, gridPart, consumer);
+        }));
     }
 
     private int getVal(Coord origin) {
@@ -127,39 +76,27 @@ public class GridBrowser {
         return grid.cells[origin.y][origin.x];
     }
 
-    void forEachOffset(int val, BiConsumer<Pair<Integer, Integer>, Coord> offsetConsumer) {
+    void forEachOffset(int val, BiConsumer<Dim, Coord> offsetConsumer) {
         if (val == 1) {
-            offsetConsumer.accept(new Pair<>(1, 1), new Coord(0, 0));
+            offsetConsumer.accept(new Dim(1, 1), new Coord(0, 0));
             return;
         }
-        iterEachDims(val, (pair) -> {
-            int w = pair.getKey();
-            int h = pair.getValue();
-            for (int x = -w + 1; x <= 0; x++) {
-                for (int y = -h + 1; y <= 0; y++) {
+        iterEachDims(val, (dim) -> {
+            for (int x = -dim.w + 1; x <= 0; x++) {
+                for (int y = -dim.h + 1; y <= 0; y++) {
                     Coord offset = new Coord(x, y);
                     LOGGER.debug("Proposing offset {}", offset);
-                    offsetConsumer.accept(pair, offset);
+                    offsetConsumer.accept(dim, offset);
                 }
             }
         });
     }
 
-    private void iterCrossParts(Coord origin, int nb, Consumer<GridPart> consumer) {
-        for (int x = (-nb + 1); x <= 0; x++) {
-            checkAndConsume(origin, GridPart.build(origin.move(x, 0), origin.move(x + nb - 1, 0)), consumer);
-        }
-        for (int y = (-nb + 1); y <= 0; y++) {
-            checkAndConsume(origin, GridPart.build(origin.move(0, y), origin.move(0, y + nb - 1)), consumer);
-        }
-    }
-
-    void iterEachDims(int num, Consumer<Pair<Integer, Integer>> consumer) {
+    void iterEachDims(int num, Consumer<Dim> consumer) {
         for (Integer divisor : findDivisors(num)) {
-            int w = divisor;
-            int h = num / divisor;
-            LOGGER.debug("Trying to dims {}x{}", w, h);
-            consumer.accept(new Pair<>(w, h));
+            Dim dim = new Dim(divisor, num / divisor);
+            LOGGER.debug("Trying dim {}", dim);
+            consumer.accept(dim);
         }
     }
 
