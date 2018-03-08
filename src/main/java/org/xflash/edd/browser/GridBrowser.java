@@ -127,15 +127,20 @@ public class GridBrowser {
         return grid.cells[origin.y][origin.x];
     }
 
-    void forEachOffset(int val, Consumer<Coord> offsetConsumer) {
+    void forEachOffset(int val, BiConsumer<Pair<Integer, Integer>, Coord> offsetConsumer) {
         if (val == 1) {
-            offsetConsumer.accept(new Coord(0, 0));
+            offsetConsumer.accept(new Pair<>(1, 1), new Coord(0, 0));
             return;
         }
-        iterEachDims(val, (w, h) -> {
-            LOGGER.debug("Trying to {}/{}", w, h);
-            for (int x = 0; x <= w; x++) {
-                offsetConsumer.accept(new Coord(x, h));
+        iterEachDims(val, (pair) -> {
+            int w = pair.getKey();
+            int h = pair.getValue();
+            for (int x = -w + 1; x <= 0; x++) {
+                for (int y = -h + 1; y <= 0; y++) {
+                    Coord offset = new Coord(x, y);
+                    LOGGER.debug("Proposing offset {}", offset);
+                    offsetConsumer.accept(pair, offset);
+                }
             }
         });
     }
@@ -149,9 +154,12 @@ public class GridBrowser {
         }
     }
 
-    void iterEachDims(int num, BiConsumer<Integer, Integer> consumer) {
+    void iterEachDims(int num, Consumer<Pair<Integer, Integer>> consumer) {
         for (Integer divisor : findDivisors(num)) {
-            consumer.accept(divisor, num / divisor);
+            int w = divisor;
+            int h = num / divisor;
+            LOGGER.debug("Trying to dims {}x{}", w, h);
+            consumer.accept(new Pair<>(w, h));
         }
     }
 

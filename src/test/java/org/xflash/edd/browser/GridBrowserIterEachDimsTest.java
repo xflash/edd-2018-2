@@ -127,7 +127,7 @@ public class GridBrowserIterEachDimsTest {
     public void iterEachDims() throws Exception {
         GridBrowser gb = new GridBrowser(null);
         HashSet<Pair<Integer, Integer>> set = new HashSet<>();
-        gb.iterEachDims(v, (w, h) -> set.add(new Pair<>(w, h)));
+        gb.iterEachDims(v, set::add);
 
         for (Pair<Integer, Integer> pair : pairs) {
             Assert.assertTrue("should contains " + pair, set.contains(pair));
