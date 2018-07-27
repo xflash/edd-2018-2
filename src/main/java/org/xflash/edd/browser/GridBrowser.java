@@ -36,7 +36,7 @@ public class GridBrowser {
     }
 
     public void forEachOrderedValue(BiConsumer<Integer, Coord> consumer) {
-        LOGGER.info("Iterating each values in : {}", grid);
+        LOGGER.debug("Iterating each values in : {}", grid);
 
         List<Pair<Integer, Coord>> pairs = new ArrayList<>();
         forEach((v, c) -> pairs.add(new Pair<>(v, c)));
@@ -59,13 +59,13 @@ public class GridBrowser {
 
     public void forEachGridParts(Coord origin, Consumer<GridPart> consumer) {
         int v = getVal(origin);
-        LOGGER.info("Iterating each grid parts available at {} : {}", origin, v);
+        LOGGER.debug("Iterating each grid parts available at {} : {}", origin, v);
 
         forEachOffset(v, ((dim, offset) -> {
             Coord lu = origin.move(offset.x, offset.y);
             Coord rb = lu.move(dim.w - 1, dim.h - 1);
             GridPart gridPart = GridPart.build(lu, rb);
-            LOGGER.debug("Checking if gridPart {} fit the grid", gridPart);
+            LOGGER.trace("Checking if gridPart {} fit the grid", gridPart);
             checkAndConsume(origin, gridPart, consumer);
         }));
     }
@@ -85,7 +85,7 @@ public class GridBrowser {
             for (int x = -dim.w + 1; x <= 0; x++) {
                 for (int y = -dim.h + 1; y <= 0; y++) {
                     Coord offset = new Coord(x, y);
-                    LOGGER.debug("Proposing offset {}", offset);
+                    LOGGER.trace("Proposing offset {}", offset);
                     offsetConsumer.accept(dim, offset);
                 }
             }
@@ -95,7 +95,7 @@ public class GridBrowser {
     void iterEachDims(int num, Consumer<Dim> consumer) {
         for (Integer divisor : findDivisors(num)) {
             Dim dim = new Dim(divisor, num / divisor);
-            LOGGER.debug("Trying dim {}", dim);
+            LOGGER.trace("Trying dim {}", dim);
             consumer.accept(dim);
         }
     }
@@ -112,7 +112,7 @@ public class GridBrowser {
     private void checkAndConsume(final Coord origin, GridPart gridPart, Consumer<GridPart> consumer) {
         if (!checkInGrid(gridPart)) return;
         if (isGridPartCollapsing(gridPart, origin)) return;
-        LOGGER.info("Proposing GridPart {} ", gridPart);
+        LOGGER.debug("Proposing GridPart {} ", gridPart);
         consumer.accept(gridPart);
     }
 

@@ -33,7 +33,7 @@ public class GridSolverImpl implements GridSolver {
             Pair<Integer, Coord> lastCoord = lastCoords[0];
 
             gb.forEachGridParts(coord, gp -> {
-                LOGGER.info("Building new GridSolution with gp {} ", gp, coord);
+                LOGGER.debug("Building new GridSolution with gp {} ", gp, coord);
                 if (lastCoord == null)
                     currentCoordSolutions.add(new GridSolution(gp));
                 else {
@@ -46,15 +46,15 @@ public class GridSolverImpl implements GridSolver {
                         }
                     }
                     if (!added)
-                        LOGGER.info("GridPart {} will be ignored as it don't fit to any previous solutions", gp);
+                        LOGGER.debug("GridPart {} will be ignored as it don't fit to any previous solutions", gp);
                 }
             });
             if (!currentCoordSolutions.isEmpty()) {
                 if (lastCoord != null) {
-                    LOGGER.info("Remove outdated GridSolutions for {}", lastCoord);
+                    LOGGER.debug("Remove outdated GridSolutions for {}", lastCoord);
                     map.remove(lastCoord);
                 }
-                LOGGER.info("Storing updated GridSolutions for {} : {}", key, currentCoordSolutions);
+                LOGGER.debug("Storing updated GridSolutions for {} : {}", key, currentCoordSolutions);
                 map.put(key, currentCoordSolutions);
             } else {
 

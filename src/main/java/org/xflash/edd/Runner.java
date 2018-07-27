@@ -2,12 +2,16 @@ package org.xflash.edd;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xflash.edd.gui.GridViewr;
 import org.xflash.edd.model.Grid;
 import org.xflash.edd.model.GridSolution;
 import org.xflash.edd.reader.GridReader;
 import org.xflash.edd.solver.GridSolver;
 import org.xflash.edd.solver.GridSolverImpl;
+import org.xflash.edd.gui.GridSolutionViewer;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.Collection;
 
 public class Runner {
@@ -16,15 +20,21 @@ public class Runner {
 
     public static void main(String[] args) {
 
-        Grid grid1 = GridReader.from(FileUtils.classpath("grid2.txt"));
-
+        long l = System.currentTimeMillis();
+        LOGGER.info("Reading grid file ...");
+        Grid grid = GridReader.from(FileUtils.classpath("grid2.txt"));
+        LOGGER.info("Computing solution for grid {}x{}", grid.w, grid.h);
         GridSolver gridSolver = new GridSolverImpl();
-        Collection<GridSolution> solutions = gridSolver.solve(grid1);
+        Collection<GridSolution> solutions = gridSolver.solve(grid);
+        LOGGER.info("Founded solution in {} ms ", System.currentTimeMillis() - l);
 
-        LOGGER.info("Founded solution for grid {}", grid1);
+        LOGGER.info(grid.toString());
         for (GridSolution solution : solutions) {
-            System.out.println("solution = " + solution);
+//            printSolution(grid, solution);
+            LOGGER.info(solution.toString());
         }
 
     }
+
+
 }
